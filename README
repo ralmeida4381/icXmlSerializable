@@ -1,5 +1,17 @@
 icXmlSerializable
 
-Library to serialize/deserializa Qt Objects to/from xml
+Library to serialize/deserialize Qt Objects to/from xml.
+
+YOU NEED:
+1) Qt4 configured on your path
+2) git
+
+TO TRY:
+
+git clone git://github.com/ralmeida4381/icXmlSerializable.git
+cd icXmlSerializable
+qmake
+make
+
 
 
