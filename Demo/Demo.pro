@@ -14,26 +14,50 @@ LIBS    += -licXmlSerializable
 
 SOURCES += main.cpp\
         dialog.cpp \
-    objecta.cpp \
-    test6.cpp \
-    test5.cpp \
-    test4.cpp \
-    test3.cpp \
-    test3_child.cpp \
-    test2.cpp \
-    test1.cpp
+    bookstore.cpp \
+    book.cpp \
+    storesection.cpp \
+    bookview.cpp
 
 HEADERS  += dialog.h \
-    objecta.h \
-    test6.h \
-    test5.h \
-    test4.h \
-    test3.h \
-    test3_child.h \
-    test2.h \
-    test1.h
+    bookstore.h \
+    book.h \
+    storesection.h \
+    bookview.h
 
-FORMS    += dialog.ui
+FORMS    += dialog.ui \
+    bookview.ui
+
+OTHER_FILES += \
+    history.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

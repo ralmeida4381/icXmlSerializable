@@ -6,67 +6,91 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>711</width>
-    <height>417</height>
+    <width>673</width>
+    <height>322</height>
    </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>16777207</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Serializable Demo</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_4">
-   <item row="0" column="0" rowspan="3">
+  <layout class="QGridLayout" name="gridLayout_3">
+   <item row="0" column="0" rowspan="4">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Item to serialize/deserialize</string>
+      <string>Book</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <widget class="QComboBox" name="comboSerialize"/>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Title</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtTitle"/>
       </item>
       <item row="1" column="0">
-       <widget class="QPlainTextEdit" name="txtSerialize"/>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Author</string>
+        </property>
+       </widget>
       </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QPushButton" name="cmdSerialize">
-     <property name="text">
-      <string>Serialize</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2" rowspan="4">
-    <widget class="QGroupBox" name="groupBox_3">
-     <property name="title">
-      <string>How to use this demo</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <property name="margin">
-       <number>1</number>
-      </property>
-      <item row="0" column="0">
-       <widget class="QPlainTextEdit" name="plainTextEdit">
+      <item row="1" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtAuthor"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Price</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="txtPrice">
         <property name="readOnly">
          <bool>true</bool>
         </property>
-        <property name="plainText">
-         <string>To serialize:
-1) Select item to serialize from combo.
-2) Click SERIALIZE.
-3) Item is serialized and xml content is displayed in text area
-
-To deserialize:
-1) Select item to deserialize from combo.
-2) Click  DESERIALIZE.
-3) Item is deserialized from text area content.</string>
+       </widget>
+      </item>
+      <item row="2" column="2" rowspan="2">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>176</width>
+          <height>55</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>In Stock</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="txtStock">
+        <property name="readOnly">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="2" column="1" rowspan="3">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -74,15 +98,96 @@ To deserialize:
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>150</height>
+       <height>84</height>
       </size>
      </property>
     </spacer>
    </item>
-   <item row="1" column="1">
-    <widget class="QPushButton" name="cmdDeserialize">
+   <item row="4" column="0" rowspan="3">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Books</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <property name="margin">
+       <number>5</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QTreeWidget" name="treeBooks">
+        <column>
+         <property name="text">
+          <string>Section</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Title</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Author</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Stock</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QCommandLinkButton" name="cmdImport">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>40</height>
+      </size>
+     </property>
      <property name="text">
-      <string>Deserialize</string>
+      <string>Import BookStore</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QCommandLinkButton" name="cmdExport">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Export BookStore</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QCommandLinkButton" name="cmdShop">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Shop it!</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QCommandLinkButton" name="cmdNewBook">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Add Book</string>
      </property>
     </widget>
    </item>

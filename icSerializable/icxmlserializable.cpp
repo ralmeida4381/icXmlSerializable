@@ -38,9 +38,9 @@ void icXmlSerializable::addBuffer(const QString & buffer) {
 
 QString icXmlSerializable::serializeMetaComponent(const QString& pMetaComponent) {
 
-    QString lbuffer;
-    QString	body;
-    QString                 metaComponent = fillSpaces(pMetaComponent);
+    QString     lbuffer;
+    QString     body;
+    QString     metaComponent = fillSpaces(pMetaComponent);
 	
 // 	setSerialProperty("icXmlSerializable-serialId", m_serialId );
 	m_contentItems.clear();
@@ -383,8 +383,9 @@ QString icXmlSerializable::encode(const QString content)
 {
 	QString buffer = content;
 
-	buffer.replace(QChar('"'), "&quot;");
-	buffer.replace(QChar('<'), "&lt;");
+        buffer.replace(QChar('&'), "&amp;");
+	buffer.replace(QChar('"'), "&quot;");        
+        buffer.replace(QChar('<'), "&lt;");
 	buffer.replace(QChar('>'), "&gt;");
 	buffer.replace(QChar('\''), "&apos;");
 	buffer.replace(QChar('/'), "&#047;");
@@ -405,8 +406,9 @@ QString icXmlSerializable::decode(const QString content)
 {
 	QString buffer = content;
 
+        buffer.replace("&amp;", 	QChar('&'));
 	buffer.replace("&quot;", 	QChar('"'));
-	buffer.replace("&lt;",		QChar('<'));
+	buffer.replace("&lt;",		QChar('<'));        
 	buffer.replace("&gt;",		QChar('>'));
 	buffer.replace("&apos;",	QChar('\''));
 	buffer.replace("&#047;",	QChar('/'));

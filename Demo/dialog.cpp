@@ -19,21 +19,17 @@
  ***************************************************************************/
 #include "dialog.h"
 #include "ui_dialog.h"
+#include "bookview.h"
+#include "storesection.h"
+#include "book.h"
 
 Dialog::Dialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Dialog)
 {
     ui->setupUi(this);
-
-    ui->comboSerialize->addItem("Object A");
-    ui->comboSerialize->addItem("Test 1");
-    ui->comboSerialize->addItem("Test 2");
-    ui->comboSerialize->addItem("Test 3");
-
-    m_test1.populate();
-    m_test2.populate(10);
-    m_test3.populate(20);
+    this->setWindowTitle("BookStore Demo");
+    m_currentBook = 0;
 
 }
 
@@ -42,64 +38,160 @@ Dialog::~Dialog()
     delete ui;
 }
 
-void Dialog::on_cmdSerialize_clicked()
-{
+void    Dialog::exportBookStore(){
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save BookStore File"),
+                                                    "",
+                                                    tr("BookStore (*.xml)"));
+    if (fileName.isEmpty())
+        return;
 
-    if (ui->comboSerialize->currentText() == "Object A") {
-        ui->txtSerialize->setPlainText(m_objectA.serializeMetaComponent("A"));
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qDebug() << "Cant write file " << fileName;
+        return;
     }
-    if (ui->comboSerialize->currentText() == "Test 1") {
-        ui->txtSerialize->setPlainText(m_test1.serializeMetaComponent("T1"));
+
+    //---------------------------------
+    //NOTES on serializing to xml:
+    // 1) m_bookStore inherits from icXmlSerializable
+    // 2) m_bookStore contains icXmlSerializable members and this members will be serialized too
+    // 3) I choose "bookstore" as the main node in xml string.
+    //----
+    QString xmlContent = m_bookStore.serializeMetaComponent("bookstore");
+    if (xmlContent.isEmpty()) {
+        QApplication::beep();
+        return;
+
     }
-    if (ui->comboSerialize->currentText() == "Test 2") {
-        ui->txtSerialize->setPlainText(m_test2.serializeMetaComponent("T2"));
+    QTextStream out(&file);
+    out << xmlContent;
+    out.flush();
+    file.close();
+
+    this->setWindowTitle("BookStore Demo: " + fileName);
+    qDebug() << "BookStore saved to " << fileName;
+}
+
+void    Dialog::importBookStore(){
+
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open BookStore File"),
+                                                    "",
+                                                    tr("BookStore (*.xml)"));
+
+    if (fileName.isEmpty())
+        return;
+
+    QString xmlContent = "";
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
+    while (!file.atEnd()) {
+        xmlContent += file.readLine();
     }
-    if (ui->comboSerialize->currentText() == "Test 3") {
-        ui->txtSerialize->setPlainText(m_test3.serializeMetaComponent("T3"));
+
+    m_bookStore.setMetaContent(xmlContent);
+    if (!m_bookStore.deserializeMetaComponent("bookstore")) {
+        QMessageBox::critical(this, tr("BookStore Demo"),
+                                        tr("Cant load BookStore file"),
+                                        QMessageBox::Ok);
+
+        return;
+    }
+
+    this->setWindowTitle("BookStore Demo: " + fileName);
+    fillBooks();
+
+}
+
+
+void    Dialog::searchBook(){
+
+}
+
+void Dialog::on_cmdShop_clicked()
+{
+    if (m_currentBook == 0)
+        return;
+
+    if (!m_currentBook->shop())
+        QApplication::beep();
+
+    displayBook(m_currentBook);
+}
+
+void Dialog::on_cmdNewBook_clicked()
+{
+    BookView* bookView = new BookView(&m_bookStore);
+    bookView->exec();
+    fillBooks();
+}
+
+void Dialog::on_cmdImport_clicked()
+{
+    importBookStore();
+}
+
+void Dialog::on_cmdExport_clicked()
+{
+    exportBookStore();
+}
+
+void    Dialog::fillBooks(){
+    ui->treeBooks->clear();
+
+    QStringList sections = m_bookStore.getSections();
+    StoreSection *section;
+    for (int index=0; index < sections.size(); index++) {
+        section = m_bookStore.getSection(sections.at(index));
+
+        QTreeWidgetItem *item = new QTreeWidgetItem(ui->treeBooks);
+        item->setText(0, section->getTitle());
+        ui->treeBooks->addTopLevelItem(item);
+        fillSection(section, item);
     }
 
 }
 
-void Dialog::on_cmdDeserialize_clicked()
+void    Dialog::fillSection(StoreSection *section, QTreeWidgetItem *parentItem) {
+    int index;
+    Book *book;
+
+    QList<Book*> list = section->getBooks();
+    for (index=0; index < list.size(); index++) {
+        book = list.at(index);
+
+        QTreeWidgetItem *item = new QTreeWidgetItem(parentItem);
+        item->setText(0, book->getTitle());
+        item->setText(1, book->getAuthor());
+        item->setText(2, QString::number(book->getPrice()));
+        item->setText(3, QString::number(book->getStock()));
+        parentItem->addChild(item);
+    }
+}
+
+void Dialog::on_treeBooks_itemClicked(QTreeWidgetItem *item, int column)
 {
-    if (ui->comboSerialize->currentText() == "Object A") {
-        m_objectA.setMetaContent(ui->txtSerialize->toPlainText());
-        if (m_objectA.deserializeMetaComponent("A")) {
-            ui->txtSerialize->setPlainText("Ok");
-        }
-        else {
-            ui->txtSerialize->setPlainText("Error");
-        }
+    if (item->text(2).isEmpty()) {
+        return;
     }
 
-    if (ui->comboSerialize->currentText() == "Test 1") {
-        m_test1.setMetaContent(ui->txtSerialize->toPlainText());
-        if (m_test1.deserializeMetaComponent("T1")) {
-            ui->txtSerialize->setPlainText("Ok");
-        }
-        else {
-            ui->txtSerialize->setPlainText("Error");
-        }
-    }
+    fillBook(item->text(0));
+}
 
-    if (ui->comboSerialize->currentText() == "Test 2") {
-        m_test2.setMetaContent(ui->txtSerialize->toPlainText());
-        if (m_test2.deserializeMetaComponent("T2")) {
-            ui->txtSerialize->setPlainText("Ok");
-        }
-        else {
-            ui->txtSerialize->setPlainText("Error");
-        }
-    }
+void Dialog::fillBook(const QString &title){
+    m_currentBook = m_bookStore.searchBookByTitle(title);
+    if (m_currentBook == 0)
+        return;
 
-    if (ui->comboSerialize->currentText() == "Test 3") {
-        m_test3.setMetaContent(ui->txtSerialize->toPlainText());
-        if (m_test3.deserializeMetaComponent("T3")) {
-            ui->txtSerialize->setPlainText("Ok");
-        }
-        else {
-            ui->txtSerialize->setPlainText("Error");
-        }
-    }
+    displayBook(m_currentBook);
+}
+
+void Dialog::displayBook(Book *book){
+    ui->txtAuthor->setText(book->getAuthor());
+    ui->txtTitle->setText(book->getTitle());
+    ui->txtPrice->setText(QString::number(book->getPrice()));
+    ui->txtStock->setText(QString::number(book->getStock()));
 
 }

@@ -21,11 +21,11 @@
 #ifndef DIALOG_H
 #define DIALOG_H
 
-#include <QDialog>
-#include "test1.h"
-#include "test2.h"
-#include "test3.h"
-#include "objecta.h"
+#include <QtGui>
+#include "bookstore.h"
+
+class StoreSection;
+class Book;
 
 namespace Ui {
     class Dialog;
@@ -40,16 +40,27 @@ public:
     ~Dialog();
 
 private slots:
-    void on_cmdSerialize_clicked();
+    void on_cmdShop_clicked();
+    void on_cmdNewBook_clicked();
+    void on_cmdImport_clicked();
+    void on_cmdExport_clicked();
 
-    void on_cmdDeserialize_clicked();
+
+    void on_treeBooks_itemClicked(QTreeWidgetItem *item, int column);
 
 private:
     Ui::Dialog *ui;
-    test1   m_test1;
-    test2   m_test2;
-    test3   m_test3;
-    ObjectA m_objectA;
+
+    BookStore   m_bookStore;
+    Book*       m_currentBook;
+
+    void        importBookStore();
+    void        exportBookStore();
+    void        searchBook();
+    void        fillBooks();
+    void        fillSection(StoreSection *section, QTreeWidgetItem *item);
+    void        fillBook(const QString& title);
+    void        displayBook(Book *);
 
 };
 

@@ -25,6 +25,10 @@ unix:!symbian {
     INSTALLS += target
 }
 
+OTHER_FILES += \
+    history.txt
+
+
 
 
 
