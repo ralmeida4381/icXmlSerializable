@@ -17,40 +17,32 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "objecta.h"
 
-ObjectA::ObjectA(QObject *parent) :
-    icXmlSerializable(parent)
+#ifndef BOOKVIEW_H
+#define BOOKVIEW_H
+
+#include <QtGui>
+class   BookStore;
+
+namespace Ui {
+    class BookView;
+}
+
+class BookView : public QDialog
 {
-    m_itemId = 0;
-    m_itemName = "";
-    m_itemComments = "";
-    m_itemDate = QDateTime::currentDateTime();
-    m_isActive = false;
-    m_itemValue = 0;
+    Q_OBJECT
 
-}
+public:
+    explicit BookView(BookStore *bookStore, QWidget *parent = 0);
+    ~BookView();
 
-bool ObjectA::serialize(){
-    setSerialProperty("id", m_itemId);
-    setSerialProperty("name", m_itemName);
-    setSerialProperty("comments", m_itemComments);
-    setSerialProperty("date", m_itemDate);
-    setSerialProperty("active", m_isActive);
-    setSerialProperty("value", m_itemValue);
+private slots:
 
-    return true;
-}
+    void on_cmdSave_clicked();
 
+private:
+    Ui::BookView *ui;
+    BookStore*   m_bookStore;
+};
 
-bool ObjectA::deserialize(){
-
-    m_itemId = getSerialProperty("id").toInt();
-    m_itemName = getSerialProperty("name").toString();
-    m_itemComments = getSerialProperty("comments").toString();
-    m_itemDate = getSerialProperty("date").toDateTime();
-    m_isActive = getSerialProperty("active").toBool();
-    m_itemValue = getSerialProperty("value").toFloat();
-
-    return true;
-}
+#endif // BOOKVIEW_H

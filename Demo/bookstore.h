@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Roberto Almeida   *
+ *   Copyright (C) 2011 by Roberto Almeida   *
  *   ralmeida@ingenieriacreativa.com   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,57 +17,54 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "test4.h"
 
-test4::test4(QObject* parent): test2(parent)
+#ifndef BOOKSTORE_H
+#define BOOKSTORE_H
+
+#include <QtCore>
+#include "icxmlserializable.h"
+
+class Book;
+class StoreSection;
+
+//----------------------------------------------------
+//STEP 1: inherits from icXmlSerializeble
+//----------------------------------------------------
+class BookStore : public icXmlSerializable
 {
-}
+    Q_OBJECT
+public:
+    explicit BookStore(QObject *parent = 0);
 
+    QString getTitle();
+    void    setTitle(const QString& title);
+    QDateTime getCreatedDate();
 
-test4::~test4()
-{
-}
+    QStringList   getSections();
+    StoreSection* getSection(const QString& name);
+    StoreSection* addSection(const QString& name);
 
+    Book*    searchBookByTitle(const QString& title);
+    Book*    searchBookByAuthor(const QString& author);
 
-bool test4::deserialize()
-{
+signals:
 
-	m_attr1 = getSerialProperty("at1").toString();
-	m_attr2 = getSerialProperty("at2").toString();
-	int	index, total;
-	bool	res;
-		
-	total = getSerialObjectCount("items");	
-	for (index=0; index < total; index++ ) {
-		test3_child *item = new test3_child(this);
-		res = getSerialObject("items", item, index);
-		m_items.append(item);
-	}
-	
-	res = test2::deserialize();
-    return res;
-}
+public slots:
 
-bool test4::serialize()
-{
-	setSerialProperty("at1", m_attr1);
-	setSerialProperty("at2", m_attr2);
-	setSerialObject("items", m_items);
-	
-    return test2::serialize();
-}
+private:
+    QString     m_title;
+    QDateTime   m_date;
 
-void test4::populate(int offset)
-{
-    m_attr1 = "this (" + QString::number(offset) + ") is new";
-    m_attr2 = "new too";
-    
-    for (int index=0; index < 3; index++) {
-		test3_child	*item = new test3_child(this);
-		item->populate(index + offset);
-		m_items.append(item);    	
-    }
-    
-    test2::populate(offset);
-}
+    //------------
+    //m_store contains pointers to icXmlSerializable objects
+    //------------
+    QHash<QString, icXmlSerializable *>   m_store;
 
+    //----------------------------------------------------
+    //STEP 2: declares serialize & deserialize methods
+    //----------------------------------------------------
+    virtual bool serialize();
+    virtual bool deserialize();
+};
+
+#endif // BOOKSTORE_H

@@ -1,0 +1,8 @@
+Release 1.0
+--------------------------------
+-First release for icXmlSerializable
+
+
+Release 1.0.1
+--------------------------------
+-Added "&" to characters to encode/decode.

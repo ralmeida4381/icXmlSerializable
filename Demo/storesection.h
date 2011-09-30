@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Roberto Almeida   *
+ *   Copyright (C) 2011 by Roberto Almeida   *
  *   ralmeida@ingenieriacreativa.com   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,48 +17,48 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "test6.h"
-#include <test3_child.h>
+#ifndef STORESECTION_H
+#define STORESECTION_H
 
-test6::test6(QObject* parent): test4(parent)
+#include <QtCore>
+#include "icxmlserializable.h"
+
+class Book;
+
+//----------------------------------------------------
+//STEP 1: inherits from icXmlSerializeble
+//----------------------------------------------------
+class StoreSection : public icXmlSerializable
 {
-}
+    Q_OBJECT
+public:
+    explicit StoreSection(QObject *parent = 0);
 
+    QString getTitle();
+    void    setTitle(const QString& title);
 
-test6::~test6()
-{
-}
+    QList<Book*> getBooks();
+    Book*    addBook(const QString& title);
+    Book*    searchBookByTitle(const QString& title);
+    Book*    searchBookByAuthor(const QString& author);    
 
+signals:
 
-bool test6::deserialize()
-{
-	int index;
-        int total = getSerialObjectCount("myitems");
-	for (index=0; index < total; index++ ) {
-		test3_child *item = new test3_child(this);
-                getSerialObject("myitems", item, index);
-		m_list.append(item);
-	}
-	
-    return test4::deserialize();
-}
+public slots:
 
-bool test6::serialize()
-{
-        setSerialObject("myitems", m_list);
-    return test4::serialize();
-}
+private:
+    QString         m_title;
 
-void test6::populate(int offset)
-{
-	int index;
-	int total = offset % 37;
-    for (index=0; index < total; index++ ){
-    	test3_child *item = new test3_child(this);
-    	item->populate(index);
-    	m_list.append(item);
-    }
-    
-    test4::populate(offset);
-}
+    //------------
+    //m_books contains icXmlSerializable objects
+    //------------
+    QHash<QString, icXmlSerializable *>  m_books;
 
+    //----------------------------------------------------
+    //STEP 2: declares serialize & deserialize methods
+    //----------------------------------------------------
+    virtual bool serialize();
+    virtual bool deserialize();
+};
+
+#endif // STORESECTION_H

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Roberto Almeida   *
+ *   Copyright (C) 2011 by Roberto Almeida   *
  *   ralmeida@ingenieriacreativa.com   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,45 +17,47 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef TEST1_H
-#define TEST1_H
+#ifndef BOOK_H
+#define BOOK_H
+#include "icxmlserializable.h"
 
-#include <icxmlserializable.h>
-#include <QtCore>
-#include <test2.h>
-#include <test4.h>
-#include <test5.h>
-#include <test6.h>
-
-/**
-	@author Roberto Almeida <ralmeida@ingenieriacreativa.com>
-*/
-class test1 : public icXmlSerializable
+//----------------------------------------------------
+//STEP 1: inherits from icXmlSerializeble
+//----------------------------------------------------
+class Book : public icXmlSerializable
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-    test1(QObject* parent=0);
-    ~test1();
+    explicit Book(QObject *parent = 0);
 
-	void	populate();
-	
-protected:
-    virtual bool deserialize();
-    virtual bool serialize();
+signals:
 
-	test2	m_t2a;	
-	test2	m_t2b;	
-	test2	m_t2c;	
-	test4	m_t4;
-	test5	m_t5;
-	test6	m_t6;
-		
-	QString	m_prop1;
-	QString	m_prop2;
-	
-	int		m_x;
-	int		m_y;
-	
+public slots:
+
+    bool    shop();
+    void    setTitle(const QString &title);
+    void    setPrice(float price);
+    void    setAuthor(const QString& author);
+    void    addStock(int stock);
+
+    QString getTitle();
+    QString getAuthor();
+    float   getPrice();
+    int     getStock();
+    QDateTime getCreatedDate();
+
+private:
+    float   m_price;
+    QString m_title;
+    int     m_stock;
+    QString m_author;
+    QDateTime m_date;
+
+    //----------------------------------------------------
+    //STEP 2: declares serialize & deserialize methods
+    //----------------------------------------------------
+    virtual bool    serialize();
+    virtual bool    deserialize();
 };
 
-#endif
+#endif // BOOK_H

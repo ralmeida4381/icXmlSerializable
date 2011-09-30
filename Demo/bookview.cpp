@@ -17,34 +17,66 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef OBJECTA_H
-#define OBJECTA_H
-#include "icxmlserializable.h"
-#include <QString>
-#include <QDateTime>
+#include "bookview.h"
+#include "ui_bookview.h"
+#include "bookstore.h"
+#include "storesection.h"
+#include "book.h"
 
-class ObjectA : public icXmlSerializable
+BookView::BookView(BookStore *bs, QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::BookView)
 {
-    Q_OBJECT
-public:
-    explicit ObjectA(QObject *parent = 0);
+    m_bookStore = bs;
+    ui->setupUi(this);
 
-signals:
+    ui->comboSection->addItems(m_bookStore->getSections());
+}
 
-public slots:
+BookView::~BookView()
+{
+    delete ui;
+}
 
-private:
-    int     m_itemId;
-    QString m_itemName;
-    QString m_itemComments;
-    QDateTime   m_itemDate;
-    bool    m_isActive;
-    float   m_itemValue;
+void BookView::on_cmdSave_clicked()
+{
+    if (ui->txtAuthor->text().isEmpty()
+            || ui->txtPrice->text().isEmpty()
+            || ui->txtStock->text().isEmpty()
+            || ui->txtTitle->text().isEmpty()) {
+        QApplication::beep();
+        return;
+    }
 
-protected:
-    virtual bool    serialize();
-    virtual bool    deserialize();
+    if (ui->comboSection->currentText().isEmpty()) {
+        QApplication::beep();
+        return;
+    }
 
-};
+    StoreSection *section = m_bookStore->addSection(ui->comboSection->currentText());
+    if (section == 0) {
+        QApplication::beep();
+        return;
+    }
 
-#endif // OBJECTA_H
+    Book* book = section->addBook(ui->txtTitle->text());
+    if (book == 0) {
+        QApplication::beep();
+        return;
+    }
+
+    book->setAuthor(ui->txtAuthor->text());
+
+    bool isOk;
+    int stock = ui->txtStock->text().toInt(&isOk);
+    if (isOk)
+        book->addStock(stock);
+
+    float price = ui->txtPrice->text().toFloat(&isOk);
+    if (isOk)
+        book->setPrice(price);
+
+    qDebug() << "Book added: " << book->getTitle();
+   this->accept();
+}
+

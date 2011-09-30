@@ -1,0 +1,12 @@
+Release 1.0 (sep 2011)
+-------------------------------
+Demo for icXmlSerializable is released
+
+Release 2.0 (sep 2011)
+-------------------------------
+Rebuild from scratch
+-Elbert & Nicole Pol found a bug on release 1.0 with OS/2 with gcc 4.1 (thanks!)
+-A practical & simpler example
+-More comments in code
+-Linked to icXmlSerializable 1.0.1
+-Added book_store_demo.xml as example.
